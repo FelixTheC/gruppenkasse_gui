@@ -27,9 +27,12 @@ class Ui_MainWindow(object):
         money_out = 0
         rest_money = 0
         for data in self.db.query_to_dic(self.db.get_data_table_childs()):
-            money_in += data['geld']
+            try:
+                money_in += int(data['geld'])
+            except ValueError:
+                pass
         for ausgaben in self.db.query_to_dic(self.db.get_ausgaben()):
-            money_out += ausgaben['preis']
+            money_out += int(ausgaben['preis'])
         return money_in - money_out
     
     def open_ausgaben(self):

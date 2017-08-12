@@ -48,7 +48,13 @@ class GruppenkassenDB():
         
         query = "INSERT INTO childs VALUES (NULL, ?, ?, ?, ?);"
         
-        cur.execute(query,(name, bezahlt_bis, erstellt_am, geld,))
+        if geld != '':
+            if erstellt_am == "NULL":
+                erstellt_am = datetime.today()
+            if bezahlt_bis == "NULL":
+                bezahlt_bis = datetime.strftime(erstellt_am + relativedelta(months=+int(geld)), "%Y-%m-%d")
+        
+        cur.execute(query,(name, bezahlt_bis, datetime.strftime(erstellt_am, "%Y-%m-%d"), geld,))
         self.conn.commit()
         cur.close()
     
@@ -76,7 +82,7 @@ class GruppenkassenDB():
         if bezahlt_bis != "NULL":
             bezahlt_bis = datetime.strftime(datetime.strptime(bezahlt_bis, "%Y-%m-%d") + relativedelta(months=+int(geld)), "%Y-%m-%d")
         else:
-            bezahlt_bis = datetime.strftime(datetime.strptime(erstellt_am, "%Y-%m-%d") + relativedelta(months=int(geld)), "%Y-%m-%d")
+            bezahlt_bis = datetime.strftime(datetime.strptime(erstellt_am, "%Y-%m-%d") + relativedelta(months=+int(geld)), "%Y-%m-%d")
             
         
         query = "UPDATE childs SET geld=?, bezahlt_bis=? WHERE name=?";

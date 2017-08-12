@@ -6,9 +6,44 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from ausgaben import Ui_ausgaben
+from db import GruppenkassenDB
+from listenansicht import Ui_liste
+
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+
 
 class Ui_MainWindow(object):
+    db = GruppenkassenDB()
+    
+    def get_number_of_childs(self):
+        return len(self.db.get_data_table_childs())
+    
+    
+    def get_rest_money(self):
+        money_in = 0
+        money_out = 0
+        rest_money = 0
+        for data in self.db.query_to_dic(self.db.get_data_table_childs()):
+            money_in += data['geld']
+        for ausgaben in self.db.query_to_dic(self.db.get_ausgaben()):
+            money_out += ausgaben['preis']
+        return money_in - money_out
+    
+    def open_ausgaben(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_ausgaben()
+        self.ui.setupUi(self.window)
+        self.window.show()
+        
+    def open_push(self):
+        self.window_1 = QtWidgets.QMainWindow()
+        self.ui = Ui_liste()
+        self.ui.setupUi(self.window_1)
+        self.window_1.show()
+    
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(565, 600)
@@ -19,7 +54,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(150, 90, 231, 17))
+        self.label.setGeometry(QtCore.QRect(150, 90, 281, 17))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -27,7 +62,7 @@ class Ui_MainWindow(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
-        self.label_5.setGeometry(QtCore.QRect(110, 20, 371, 71))
+        self.label_5.setGeometry(QtCore.QRect(58, 20, 430, 71))
         font = QtGui.QFont()
         font.setPointSize(18)
         self.label_5.setFont(font)
@@ -76,9 +111,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.money_out = QtWidgets.QPushButton(self.widget2)
         self.money_out.setObjectName("money_out")
+        self.money_out.clicked.connect(self.open_ausgaben)
         self.horizontalLayout_3.addWidget(self.money_out)
         self.money_in = QtWidgets.QPushButton(self.widget2)
         self.money_in.setObjectName("money_in")
+        self.money_in.clicked.connect(self.open_push)
         self.horizontalLayout_3.addWidget(self.money_in)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -98,9 +135,9 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Eine kurze Übersicht"))
         self.label_5.setText(_translate("MainWindow", "Hallo und Herzlich Willkommen"))
         self.label_3.setText(_translate("MainWindow", "Anzahl Kinder:"))
-        self.anzahl_children.setText(_translate("MainWindow", "20"))
+        self.anzahl_children.setText(_translate("MainWindow", str(self.get_number_of_childs())))
         self.label_2.setText(_translate("MainWindow", "Verfügbares Geld in €:"))
-        self.money_total.setText(_translate("MainWindow", "100"))
+        self.money_total.setText(_translate("MainWindow", str(self.get_rest_money())))
         self.money_out.setText(_translate("MainWindow", "Ausgaben"))
         self.money_in.setText(_translate("MainWindow", "Geld einzahlen"))
 

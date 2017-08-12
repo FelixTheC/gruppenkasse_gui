@@ -140,7 +140,13 @@ class GruppenkassenDB():
     
     def query_to_dic(self, query):
         data = []
-        if len(query[0]) == 5:
+        
+        try:
+            query_set = query[0]
+        except IndexError:
+            query_set = query
+        
+        if len(query_set) > 4:
             for q in query:
                 data.append(
                     {'id':q[0], 'name': q[1], 'bezahlt_bis': q[2], 'erstellt_am': q[3], 'geld':q[4]}

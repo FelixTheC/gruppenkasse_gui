@@ -24,13 +24,13 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Liste</string>
      </attribute>
-     <widget class="QPushButton" name="overview">
+     <widget class="QPushButton" name="refresh">
       <property name="geometry">
        <rect>
         <x>380</x>
@@ -40,20 +40,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Übersicht</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="ausgaben">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>300</y>
-        <width>171</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ausgaben</string>
+       <string>Neuladen</string>
       </property>
      </widget>
      <widget class="QPushButton" name="search">

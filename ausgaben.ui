@@ -36,16 +36,6 @@
      <attribute name="title">
       <string>Uebersicht</string>
      </attribute>
-     <widget class="QTableView" name="tableAusgaben">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>541</width>
-        <height>301</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPushButton" name="refresh">
       <property name="geometry">
        <rect>
@@ -57,6 +47,16 @@
       </property>
       <property name="text">
        <string>Neuladen</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>561</width>
+        <height>321</height>
+       </rect>
       </property>
      </widget>
     </widget>

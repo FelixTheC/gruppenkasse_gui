@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
     
     def get_rest_money(self):
         money_in = 0
-        money_out = 0
+        money_out = 0.00
         rest_money = 0
         for data in self.db.query_to_dic(self.db.get_data_table_childs()):
             try:
@@ -32,16 +32,23 @@ class Ui_MainWindow(object):
             except ValueError:
                 pass
         for ausgaben in self.db.query_to_dic(self.db.get_ausgaben()):
-            money_out += int(ausgaben['preis'])
-        return money_in - money_out
+            ausgabe = ausgaben['preis'].replace(',','.')
+            money_out += float(ausgabe)
+        return float(money_in) - money_out
     
     def open_ausgaben(self):
+        self.anzahl_children.setText(str(self.get_number_of_childs()))
+        self.money_total.setText(str(self.get_rest_money()))
+        
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_ausgaben()
         self.ui.setupUi(self.window)
         self.window.show()
         
     def open_push(self):
+        self.anzahl_children.setText(str(self.get_number_of_childs()))
+        self.money_total.setText(str(self.get_rest_money()))
+        
         self.window_1 = QtWidgets.QMainWindow()
         self.ui = Ui_liste()
         self.ui.setupUi(self.window_1)

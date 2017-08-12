@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -92,12 +92,12 @@
        </rect>
       </property>
      </widget>
-     <widget class="QListView" name="listView">
+     <widget class="QTableWidget" name="tableWidget">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>371</width>
+        <y>10</y>
+        <width>361</width>
         <height>361</height>
        </rect>
       </property>
@@ -177,6 +177,29 @@
       </property>
       <property name="text">
        <string>Euro</string>
+      </property>
+     </widget>
+     <widget class="QDateEdit" name="dateEdit">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>100</y>
+        <width>110</width>
+        <height>27</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>80</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>In der Gruppe seit</string>
       </property>
      </widget>
     </widget>

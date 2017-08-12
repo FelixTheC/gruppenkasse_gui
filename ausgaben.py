@@ -6,9 +6,36 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+from db import GruppenkassenDB
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_ausgaben(object):
+    
+    db = GruppenkassenDB()
+    
+    def ausgaben(self):
+        money = 0.00
+        for data in self.db.get_ausgaben():
+            geld_temp = str(data[2])
+            geld = geld_temp.replace(',','.')
+            money += float(geld)
+        return money
+    
+    def create_a_ausgabe(self):
+        self.db.create_ausgabe(verwendungszweck=self.verwendungszweck.text(),
+                               datum=self.date.text(),
+                               preis=self.money.text())
+    
+    def load_data_into_table(self):
+        self.tableWidget.setRowCount(len(self.db.get_ausgaben()))
+        headers = ['id', 'Vzweck', 'Preis', 'Datum']
+        for n, data in enumerate(self.db.get_ausgaben()):
+            for m, d in enumerate(data):
+                newItem = QtWidgets.QTableWidgetItem(str(d))
+                self.tableWidget.setItem(n, m, newItem)
+        self.tableWidget.setHorizontalHeaderLabels(headers)               
+    
+    
     def setupUi(self, ausgaben):
         ausgaben.setObjectName("ausgaben")
         ausgaben.resize(567, 469)
@@ -23,11 +50,32 @@ class Ui_ausgaben(object):
         self.refresh = QtWidgets.QPushButton(self.uebsicht)
         self.refresh.setGeometry(QtCore.QRect(180, 330, 204, 27))
         self.refresh.setObjectName("refresh")
+        self.refresh.clicked.connect(self.load_data_into_table)
+        
         self.tableWidget = QtWidgets.QTableWidget(self.uebsicht)
         self.tableWidget.setGeometry(QtCore.QRect(0, 0, 561, 321))
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(0)
-        self.tableWidget.setRowCount(0)
+        self.tableWidget.setColumnCount(4)
+        
+        self.widget = QtWidgets.QWidget(self.uebsicht)
+        self.widget.setGeometry(QtCore.QRect(10, 360, 152, 19))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label_4 = QtWidgets.QLabel(self.widget)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout.addWidget(self.label_4)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)        
+        self.label_5 = QtWidgets.QLabel(self.widget)
+        self.label_5.setObjectName("label_5")
+        self.label_5.setFont(font)
+        self.horizontalLayout.addWidget(self.label_5)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(75)        
         self.ausgaben_2.addTab(self.uebsicht, "")
         self.hinzufuegen = QtWidgets.QWidget()
         self.hinzufuegen.setObjectName("hinzufuegen")
@@ -63,6 +111,8 @@ class Ui_ausgaben(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.submit = QtWidgets.QPushButton(self.layoutWidget1)
         self.submit.setObjectName("submit")
+        self.submit.clicked.connect(self.create_a_ausgabe)
+        
         self.verticalLayout.addWidget(self.submit)
         self.pushButton_2 = QtWidgets.QPushButton(self.layoutWidget1)
         self.pushButton_2.setObjectName("pushButton_2")
@@ -87,6 +137,8 @@ class Ui_ausgaben(object):
         _translate = QtCore.QCoreApplication.translate
         ausgaben.setWindowTitle(_translate("ausgaben", "Ausgaben"))
         self.refresh.setText(_translate("ausgaben", "Neuladen"))
+        self.label_4.setText(_translate("ausgaben", "Ausgaben total:"))
+        self.label_5.setText(_translate("ausgaben", str(self.ausgaben()) + " €"))        
         self.ausgaben_2.setTabText(self.ausgaben_2.indexOf(self.uebsicht), _translate("ausgaben", "Uebersicht"))
         self.label.setText(_translate("ausgaben", "Verwendungszweck"))
         self.label_2.setText(_translate("ausgaben", "Datum"))
@@ -103,5 +155,6 @@ if __name__ == "__main__":
     ui = Ui_ausgaben()
     ui.setupUi(ausgaben)
     ausgaben.show()
+    ui.load_data_into_table()
     sys.exit(app.exec_())
 

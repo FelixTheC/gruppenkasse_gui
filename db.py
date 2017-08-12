@@ -52,9 +52,14 @@ class GruppenkassenDB():
             if erstellt_am == "NULL":
                 erstellt_am = datetime.today()
             if bezahlt_bis == "NULL":
-                bezahlt_bis = datetime.strftime(erstellt_am + relativedelta(months=+int(geld)), "%Y-%m-%d")
-        
-        cur.execute(query,(name, bezahlt_bis, datetime.strftime(erstellt_am, "%Y-%m-%d"), geld,))
+                try:
+                    bezahlt_bis = datetime.strftime(erstellt_am + relativedelta(months=+int(geld)), "%d.%m.%y")
+                except TypeError:
+                    bezahlt_bis = datetime.strftime(datetime.strptime(erstellt_am, "%d.%m.%y") + relativedelta(months=+int(geld)), "%d.%m.%y")
+        try:            
+            cur.execute(query,(name, bezahlt_bis, datetime.strftime(erstellt_am, "%d.%m.%y"), geld,))
+        except TypeError:
+            cur.execute(query,(name, bezahlt_bis, erstellt_am, geld,))
         self.conn.commit()
         cur.close()
     
@@ -68,9 +73,9 @@ class GruppenkassenDB():
         if "name" in kwargs:
             name = kwargs['name']
             old_data = self.get_data_table_childs(kwargs['name'])
-            old_money = old_data[4]
-            erstellt_am = old_data[3]
-            bezahlt_bis = old_data[2]
+            old_money = old_data[0][4]
+            erstellt_am = old_data[0][3]
+            bezahlt_bis = old_data[0][2]
         else:
             raise Exception('name must be defined')
         
@@ -80,11 +85,10 @@ class GruppenkassenDB():
             raise Exception("Geld must be defined")
     
         if bezahlt_bis != "NULL":
-            bezahlt_bis = datetime.strftime(datetime.strptime(bezahlt_bis, "%Y-%m-%d") + relativedelta(months=+int(geld)), "%Y-%m-%d")
+            bezahlt_bis = datetime.strftime(datetime.strptime(bezahlt_bis, "%d.%m.%y") + relativedelta(months=+int(geld)), "%d.%m.%y")
         else:
-            bezahlt_bis = datetime.strftime(datetime.strptime(erstellt_am, "%Y-%m-%d") + relativedelta(months=+int(geld)), "%Y-%m-%d")
+            bezahlt_bis = datetime.strftime(datetime.strptime(erstellt_am, "%d.%m.%y") + relativedelta(months=+int(geld)), "%d.%m.%y")
             
-        
         query = "UPDATE childs SET geld=?, bezahlt_bis=? WHERE name=?";
         
         cur.execute(query, (str(int(geld) + old_money), bezahlt_bis, name,))
@@ -103,7 +107,7 @@ class GruppenkassenDB():
                 
         elif name != '':
             cur.execute("SELECT * FROM childs WHERE name=?;", (name,))
-            query = cur.fetchone()
+            query = cur.fetchall()
             cur.close()
             return query
         else:
@@ -134,14 +138,10 @@ class GruppenkassenDB():
     
     def get_ausgaben(self):
         cur = self.conn.cursor()
-        data = ""
-        query = "SELECT * FROM ausgaben"
-        
-        cur.execute(query)
-        data = cur.fetchall()
-        
+        cur.execute("SELECT * FROM ausgaben")
+        query = cur.fetchall()
         cur.close()
-        return data
+        return query
     
     
     def query_to_dic(self, query):

@@ -3,6 +3,7 @@ from datetime import timedelta
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+
 class GruppenkassenDB():
     
     conn = sqlite3.connect("gruppenkasse.db")
@@ -93,6 +94,7 @@ class GruppenkassenDB():
             query = cur.fetchall()
             cur.close()
             return query
+                
         elif name != '':
             cur.execute("SELECT * FROM childs WHERE name=?;", (name,))
             query = cur.fetchone()
@@ -136,11 +138,17 @@ class GruppenkassenDB():
         return data
     
     
-if __name__ == "__main__":
-    now = datetime.now()
-    db = GruppenkassenDB()
+    def query_to_dic(self, query):
+        data = []
+        if len(query[0]) == 5:
+            for q in query:
+                data.append(
+                    {'id':q[0], 'name': q[1], 'bezahlt_bis': q[2], 'erstellt_am': q[3], 'geld':q[4]}
+                )
+        else:
+            for q in query:
+                data.append(
+                    {'id':q[0], 'verwendungszweck': q[1], 'preis': q[2], 'datum': q[3]}
+                )            
+        return data
     
-    db.set_data_into_childs(name="test", erstellt_am=now.date(), geld="20")
-    #db.update_child_data(name="test", geld="1")
-    data = db.get_data_table_childs()
-    print(data)
